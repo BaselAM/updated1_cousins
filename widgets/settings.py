@@ -72,6 +72,110 @@ class SettingsWidget(QWidget):
         btn_layout.addWidget(self.save_btn)
         main_layout.addWidget(btn_box)
 
+    # The main issue is in how theme changes are applied and how the cancel button works
+    # Here's a fixed version of the critical functions in settings.py:
+
+    def save_settings(self):
+        """Save all settings with validation and error handling"""
+        try:
+            QApplication.setOverrideCursor(Qt.WaitCursor)
+
+            # Validate low stock threshold
+            low_stock = self.low_stock_threshold_input.text().strip()
+            if not low_stock.isdigit() or int(low_stock) < 0:
+                low_stock = "10"
+                self.low_stock_threshold_input.setText(low_stock)
+
+            # Get current settings
+            settings = {
+                'theme': self.theme_names[self.theme_combo.currentIndex()],
+                'language': self.language_combo.currentData(),
+                'low_stock_threshold': low_stock,
+                'default_currency': self.default_currency_combo.currentText().lower(),
+                'auto_restock': str(self.auto_restock_checkbox.isChecked()),
+                'backup_interval': str(self.db_backup_interval.currentIndex()),
+                'measurement_units': str(self.units_combo.currentIndex())
+            }
+
+            # Save to database first
+            for key, value in settings.items():
+                self.gui.settings_db.save_setting(key, value)
+
+            # Update initial settings to match saved values
+            self.initial_settings = self.get_current_settings()
+
+            # Apply language change via callback - wrap in try/except
+            try:
+                if settings['language'] != self.translator.language:
+                    self.on_save_callback(settings['language'])
+            except Exception as lang_error:
+                print(f"Error applying language change: {str(lang_error)}")
+
+            # Apply theme change - wrap in try/except
+            try:
+                set_theme(settings['theme'])
+                # Only call apply_theme_to_all if it exists
+                if hasattr(self.gui, 'apply_theme_to_all') and callable(
+                        self.gui.apply_theme_to_all):
+                    self.gui.apply_theme_to_all()
+                else:
+                    # Fallback - apply theme to current widget only
+                    self.apply_theme()
+            except Exception as theme_error:
+                print(f"Error applying theme change: {str(theme_error)}")
+
+            QMessageBox.information(
+                self,
+                self.translator.t('success'),
+                self.translator.t('settings_saved'),
+                buttons=QMessageBox.Ok
+            )
+
+        except Exception as e:
+            print(f"Settings save error: {str(e)}")
+            QMessageBox.critical(
+                self,
+                self.translator.t('error'),
+                f"{self.translator.t('settings_save_error')}\n{str(e)}",
+                buttons=QMessageBox.Ok
+            )
+        finally:
+            QApplication.restoreOverrideCursor()
+
+    def cancel_changes(self):
+        """Revert to the initial settings and go back to previous view"""
+        try:
+            # Safe navigation to previous view
+            if hasattr(self.gui, 'content') and hasattr(self.gui.content, 'stack'):
+                self.gui.content.stack.setCurrentIndex(0)
+            elif hasattr(self.gui, 'content_stack'):  # In your updated GUI structure
+                self.gui.content_stack.setCurrentWidget(self.gui.home_page)
+
+            # Reload settings from database - prepare for next time
+            self.load_initial_settings()
+        except Exception as e:
+            print(f"Cancel settings error: {str(e)}")
+            # If navigation fails, just reload settings
+            self.load_initial_settings()
+
+    def _apply_theme_change(self, theme_name):
+        """Apply theme change - now with better error handling"""
+        try:
+            # Apply the theme
+            set_theme(theme_name)
+
+            # Apply theme to GUI if method exists
+            if hasattr(self.gui, 'apply_theme_to_all') and callable(
+                    self.gui.apply_theme_to_all):
+                self.gui.apply_theme_to_all()
+            elif hasattr(self.gui, 'apply_theme') and callable(self.gui.apply_theme):
+                self.gui.apply_theme()
+
+            # Always apply theme to self
+            self.apply_theme()
+        except Exception as e:
+            print(f"Theme change error: {str(e)}")
+
     def _create_appearance_group(self, parent):
         group = QGroupBox(self.translator.t('appearance'), parent)
         # Style will be applied in apply_theme()
@@ -87,11 +191,6 @@ class SettingsWidget(QWidget):
         group.setLayout(layout)
         return group
 
-    def _apply_theme_change(self, theme_name):
-        """Apply theme change - now called only from save_settings"""
-        set_theme(theme_name)
-        self.gui.apply_theme_to_all()
-        self.apply_theme()
 
     def apply_theme(self):
         """Apply theme to all settings widget components"""
@@ -304,60 +403,6 @@ class SettingsWidget(QWidget):
         # Store initial settings after loading
         self.initial_settings = self.get_current_settings()
 
-    def cancel_changes(self):
-        """Revert to the initial settings and go back to previous view"""
-        # Return to previous view without saving changes
-        self.gui.content.stack.setCurrentIndex(0)
-
-        # Reload settings from database - prepare for next time the settings page is opened
-        self.load_initial_settings()
-
-    def save_settings(self):
-        """Save all settings with validation and error handling"""
-        try:
-            # Validate low stock threshold
-            low_stock = self.low_stock_threshold_input.text().strip()
-            if not low_stock.isdigit() or int(low_stock) < 0:
-                low_stock = "10"
-                self.low_stock_threshold_input.setText(low_stock)
-
-            # Get current settings - use the consistent theme mapping
-            settings = {
-                'theme': self.theme_names[self.theme_combo.currentIndex()],
-                'language': self.language_combo.currentData(),
-                'low_stock_threshold': low_stock,
-                'default_currency': self.default_currency_combo.currentText().lower(),
-                'auto_restock': str(self.auto_restock_checkbox.isChecked()),
-                'backup_interval': str(self.db_backup_interval.currentIndex()),
-                'measurement_units': str(self.units_combo.currentIndex())
-            }
-
-            # Save to database
-            for key, value in settings.items():
-                self.gui.settings_db.save_setting(key, value)
-
-            # Apply changes only now
-            self._apply_theme_change(settings['theme'])  # Apply theme change
-            self.on_save_callback(
-                settings['language'])  # Apply language change via callback
-
-            # Update initial settings to match saved values
-            self.initial_settings = self.get_current_settings()
-
-            QMessageBox.information(
-                self,
-                self.translator.t('success'),
-                self.translator.t('settings_saved'),
-                buttons=QMessageBox.Ok
-            )
-
-        except Exception as e:
-            QMessageBox.critical(
-                self,
-                self.translator.t('error'),
-                f"{self.translator.t('settings_save_error')}\n{str(e)}",
-                buttons=QMessageBox.Ok
-            )
 
     def _create_language_group(self, parent):
         group = QGroupBox(self.translator.t('language_settings'), parent)
@@ -528,3 +573,4 @@ class SettingsWidget(QWidget):
         # Units combo
         self.units_combo.setItemText(0, self.translator.t('metric_system'))
         self.units_combo.setItemText(1, self.translator.t('imperial_system'))
+

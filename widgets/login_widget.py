@@ -8,7 +8,7 @@ from translator import Translator
 
 class LoginWidget(QWidget):
     # Signal emitted when the login is successful.
-    login_successful = pyqtSignal()
+    login_successful = pyqtSignal(str)
 
     def __init__(self, translator=None, parent=None):
         super().__init__(parent)
@@ -98,7 +98,7 @@ class LoginWidget(QWidget):
         # Check against the hard-coded default credentials.
         if username == "abumukh" and password == "123":
             self.status_label.setText("Login successful!")
-            self.login_successful.emit()
+            self.login_successful.emit(username)  # Pass the username
         else:
             self.status_label.setText("Invalid credentials!")
             QMessageBox.warning(self, "Login Failed", "Invalid username or password.")

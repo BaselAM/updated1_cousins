@@ -6,6 +6,7 @@ from themes import get_color  # Add theme import
 class HelpWidget(QWidget):
     def __init__(self, translator):
         super().__init__()
+        self.setObjectName("helpContainer")  # Added for CSS styling
         self.translator = translator
         self.setup_ui()
         self.apply_theme()  # Apply theme on initialization

@@ -1,6 +1,206 @@
 # translator.py
 
 TRANSLATIONS = {
+'product_details': {
+        'en': 'Product Details',
+        'he': 'פרטי מוצר'
+    },
+    'product_name_placeholder': {
+        'en': 'Enter product name',
+        'he': 'הזן שם מוצר'
+    },
+    'category_placeholder': {
+        'en': 'Enter category',
+        'he': 'הזן קטגוריה'
+    },
+    'car_placeholder': {
+        'en': 'Enter car name',
+        'he': 'הזן שם רכב'
+    },
+    'model_placeholder': {
+        'en': 'Enter model',
+        'he': 'הזן דגם'
+    },
+    'clear_all': {
+        'en': 'Clear All',
+        'he': 'נקה הכל'
+    },
+    'required_field': {
+        'en': 'Required field',
+        'he': 'שדה חובה'
+    },
+    'filter_title': {
+        'en': 'Filter Products',
+        'he': 'סינון מוצרים'
+    },
+    'filter_criteria': {
+        'en': 'Filter Criteria',
+        'he': 'קריטריוני סינון'
+    },
+    'name_placeholder': {
+        'en': 'Search by name',
+        'he': 'חפש לפי שם'
+    },
+    'no_min_price': {
+        'en': 'No minimum price',
+        'he': 'ללא מחיר מינימלי'
+    },
+    'no_max_price': {
+        'en': 'No maximum price',
+        'he': 'ללא מחיר מקסימלי'
+    },
+    'price_range': {
+        'en': 'Price Range',
+        'he': 'טווח מחירים'
+    },
+    'reset': {
+        'en': 'Reset',
+        'he': 'איפוס'
+    },
+    'apply_filter': {
+        'en': 'Apply Filter',
+        'he': 'החל סינון'
+    },
+    'filter_results': {
+        'en': 'Found {count} out of {total} products',
+        'he': 'נמצאו {count} מתוך {total} מוצרים'
+    },
+    'no_cell_selected': {
+        'en': 'No cell selected',
+        'he': 'לא נבחר תא'
+    },
+    'confirm_clear': {
+        'en': 'Confirm Clear',
+        'he': 'אישור מחיקה'
+    },
+    'confirm_clear_field': {
+        'en': 'Are you sure you want to clear the {field} field?',
+        'he': 'האם אתה בטוח שברצונך למחוק את השדה {field}?'
+    },
+    'product_name_required': {
+        'en': 'Product name is required',
+        'he': 'שם המוצר הוא שדה חובה'
+    },
+    'validation_error': {
+        'en': 'Validation Error',
+        'he': 'שגיאת אימות'
+    },
+    'name_required': {
+        'en': 'Please enter a product name',
+        'he': 'אנא הזן שם מוצר'
+    },
+    'save': {
+        'en': 'Save',
+        'he': 'שמור'
+    },
+    'cancel': {
+        'en': 'Cancel',
+        'he': 'בטל'
+    },
+    'yes_btn': {
+        'en': 'Yes, delete {count}',
+        'he': 'כן, מחק {count}'
+    },
+    'no_btn': {
+        'en': 'No',
+        'he': 'לא'
+    },
+    'product_added': {
+        'en': 'Product added successfully',
+        'he': 'המוצר נוסף בהצלחה'
+    },
+    'export': {
+        'en': "Export",
+        'he': "ייצוא"
+    },
+    'refresh': {
+        'en': "Refresh",
+        'he': "רענון"
+    },
+    'loading_products': {
+        'en': "Loading products...",
+        'he': "טוען מוצרים..."
+    },
+    'products_loaded': {
+        'en': "Loaded {count} products",
+        'he': "נטענו {count} מוצרים"
+    },
+    'search_placeholder': {
+        'en': "Search products by name, category, car...",
+        'he': "חפש מוצרים לפי שם, קטגוריה, רכב..."
+    },
+    'filter_status': {
+        'en': "Showing {count} of {total} products",
+        'he': "מציג {count} מתוך {total} מוצרים"
+    },
+    'search_results': {
+        'en': "Found {count} of {total} products",
+        'he': "נמצאו {count} מתוך {total} מוצרים"
+    },
+    'no_data_to_export': {
+        'en': "No data to export",
+        'he': "אין נתונים לייצוא"
+    },
+    'export_title': {
+        'en': "Export Products",
+        'he': "ייצוא מוצרים"
+    },
+    'export_success': {
+        'en': "Data exported successfully to {file}",
+        'he': "הנתונים יוצאו בהצלחה לקובץ {file}"
+    },
+'filter_status': {
+    'en': "Showing {count} of {total} products",
+    'he': "מציג {count} מתוך {total} מוצרים"
+},
+'filter_error': {
+    'en': "Error applying filter",
+    'he': "שגיאה בהחלת הסינון"
+},
+'search_products': {
+    'en': "Search:",
+    'he': "חיפוש:"
+},
+'load_error': {
+    'en': "Error loading products",
+    'he': "שגיאה בטעינת מוצרים"
+},
+'dialog_error': {
+    'en': "Error opening dialog",
+    'he': "שגיאה בפתיחת החלון"
+},
+'data_error': {
+    'en': "Invalid data provided",
+    'he': "נתונים לא תקינים"
+},
+'operation_error': {
+    'en': "Operation failed",
+    'he': "הפעולה נכשלה"
+},
+'details_error': {
+    'en': "Error showing product details",
+    'he': "שגיאה בהצגת פרטי המוצר"
+},
+'clear_error': {
+    'en': "Error clearing field",
+    'he': "שגיאה בניקוי השדה"
+},
+    'parts_button': {
+        'en': "Parts",
+        'he': "חלקים"
+    },
+    'web_search_button': {
+        'en': "Web Search",
+        'he': "חיפוש באינטרנט"
+    },
+'home_page_title': {
+    'en': "Welcome to Abu Mukh Car Parts Management",
+    'he': "ברוכים הבאים לניהול חלקי רכב אבו מוך"
+},
+'home_button_tooltip': {
+    'en': "Return to home page",
+    'he': "חזרה לדף הבית"
+},
     'products_table': {
         'en': "Parts Table",
         'he': "טבלת חלקים"

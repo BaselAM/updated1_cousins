@@ -5,6 +5,7 @@ from themes import get_color  # Add theme import
 class StatisticsWidget(QWidget):
     def __init__(self, translator):
         super().__init__()
+        self.setObjectName("statisticsContainer")  # Added for CSS styling
         self.translator = translator
         self.setup_ui()
         self.apply_theme()  # Apply theme on initialization
